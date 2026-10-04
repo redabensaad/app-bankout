@@ -1,79 +1,132 @@
-# Technical choice - Bank Account Kata
+# Technical Choices • Bankout
 
-## Conception choice: Pure Java
+This document explains the design decisions made during the implementation of the Bank Account Kata.
 
-### Why no framework? (Spring Boot, etc.) ?
+## 🏗️ Design Choice: Pure Java
 
-The requirement is explicit: "go for the simplest solution," and it rules out any persistence or UI. Introducing Spring Boot here would amount to **over-engineering**—offering no benefits (no web layer, no complex dependency injection, no database) while incurring a disproportionate cost in terms of complexity and configuration. Opting for **plain Java + Maven + JUnit 5** demonstrates a mastery of fundamentals that is independent of frameworks.
+The exercise explicitly targets simplicity.
 
-### Simple layered architecture
+Adding frameworks such as Spring Boot would introduce unnecessary complexity because the project has:
 
-```
+* No persistence layer
+* No web layer
+* No complex dependency graph
+* No infrastructure concerns
+
+Using plain Java demonstrates mastery of core language features and object-oriented design without relying on external frameworks.
+
+## ⚙️ Layered Architecture
+
+```text
 src/main/java/com/redabensaad/bankout
 ├── domain/
-│   ├── Account.java                        → core business (deposit, withdraw, balance)
-│   ├── Operation.java                      → value object immuable (type, date, amount, post-transaction balance)
-│   ├── OperationType.java                  → enum (DEPOSIT, WITHDRAWAL)
-│   └── InsufficientBalanceException.java   → explicit business exception
-├── application/
-│   └── AccountService.java                 → Exposed service API (facade)
-└── statement/
-│    ├── StatementPrinter.java              → interface (port) for displaying the reading
-│    └── ConsoleStatementPrinter.java       → consol implémentation
-src/main/java/com/redabensaad/bankout
+│ ├── Account
+│ ├── Amount
+│ ├── Operation
+│ └── Exceptions
 ├── api/
-│   ├── AccountServiceIntegrationTest.java  → unit test for account service about fonctionnal orchestration
-├── domain/
-│   ├── AccountTest.java                    → units tests for account business system (deposit, withdraw, solde)
-├── statement/
-│   └── ConsoleStatementPrinterTest.java    → unit test for statement display
+│ ├── AccountService
+│ └── Clock
+└── statement/
+├── StatementPrinter
+└── ConsoleStatementPrinter
 ```
 
-| Layer         | Responsability                           | Justification |
-|---------------|------------------------------------------|---|
-| `domain`      | Pure business rules, without any I/O     | 100% unit-testable, no external dependencies |
-| `application` | Service entry point, orchestration | Corresponds to the "service API" expected by the problem statement. |
-| `statement`   | Formatting and displaying the statement         | Display/business logic separation (SRP); injectable interface for easy testing |
+| Layer | Responsibility |
+|---------|---------|
+| Domain | Business rules and financial logic |
+| API | Application orchestration |
+| Statement | Formatting and output concerns |
 
-### Applied Engineering Principles
+This separation follows the Single Responsibility Principle and keeps the core domain independent from infrastructure concerns.
 
-- **TDD**: Every behavior is driven by a test written before the code (Red → Green → Refactor cycle).
-- **BigDecimal instead of `double`**: Avoids rounding errors on amounts—non-negotiable in a financial context.
-- **Immutability**: Once recorded, an `Operation` is never modified, ensuring history reliability (traceability/audit).
-- **Typed domain exceptions**: e.g., `InsufficientBalanceException` rather than returning `false` or `null`, ensuring errors are explicit and manageable by the caller.
-- **Dependency Inversion without a framework**: `StatementPrinter` is an interface injected via the constructor—allowing `AccountService` to be tested without depending on `System.out`.
-- **No Repository/DAO**: Persistence is explicitly out of scope; history is kept in memory (`List<Operation>`) within the `Account`.
+## ✅ Engineering Principles
 
-### Deliberately Excluded
+### Test-Driven Development
 
-- No UI (interactive CLI, web, etc.)
-- No persistence (database, files)
-- No dependency injection framework
-- No design patterns not justified by a real need within the kata (Builder, Factory, Repository, etc.)
+Every behavior is introduced through a failing test before implementation.
 
-## Testing Strategy
+```text
+Red → Green → Refactor
+```
 
-- **JUnit 5** for unit tests.
-- **AssertJ** for fluent, readable assertions.
-- Test naming using the *Given/When/Then* style, making them clear even to non-technical readers (e.g., `should_throw_when_withdrawal_exceeds_balance`).
-- Coverage of both nominal cases **and** edge cases: negative/zero amounts, insufficient balance, empty history, multiple operations.
+### Financial Accuracy
 
-## Stack technique
+All monetary values use:
 
-| Outil | Usage |
-|---|---|
-| Java 17 | Langage |
-| Maven | Build & gestion des dépendances |
-| JUnit 5 | Framework de test |
-| AssertJ | Assertions fluides |
+```java
+BigDecimal
+```
 
-## Security
+instead of floating-point types.
 
-Dependencies are kept up to date to avoid known vulnerabilities (e.g., CVE-2026-24400 in AssertJ, fixed by upgrading to version ≥ 3.27.7).
+This prevents rounding errors and ensures deterministic calculations.
 
-## Potential enhancements (intentionally out of scope for this kata)
+### Immutability
 
-- Concurrency management (`Account` is not thread-safe in its current state—would need synchronization for actual concurrent access)
-- Persistence (Repository pattern) if integration with a real database were required
-- Internationalization of date and amount formats in the statement
-- REST API if HTTP exposure became necessary
+Operations are immutable records.
+
+Once created, a transaction cannot be modified, which guarantees statement consistency and auditability.
+
+### Explicit Domain Exceptions
+
+Business failures are modeled using dedicated exceptions rather than primitive return values.
+
+Example:
+
+```java
+InsufficientBalanceException
+```
+
+### Dependency Inversion
+
+Rendering logic is exposed through the `StatementPrinter` abstraction, allowing business services to remain independent from output implementations.
+
+## 🚫 Deliberately Excluded
+
+The following concerns were intentionally left out of scope:
+
+* User Interface
+* Database Persistence
+* REST API
+* Dependency Injection Frameworks
+* Repository Pattern
+* Factory Pattern
+* Builder Pattern
+
+These elements would increase complexity without contributing to the objectives of the exercise.
+
+## 🧪 Testing Strategy
+
+### Unit Tests
+
+Validate domain behavior:
+
+* Deposits
+* Withdrawals
+* Amount validation
+* Balance management
+
+### Integration Tests
+
+Validate orchestration and statement generation.
+
+### Assertion Framework
+
+AssertJ is used to improve readability and expressiveness of assertions.
+
+## 🔐 Security Considerations
+
+Dependencies are maintained at current versions to mitigate known vulnerabilities and ensure long-term maintainability.
+
+## 🔮 Future Enhancements
+
+Potential extensions beyond the scope of the kata:
+
+* Thread-safe account operations
+* Database persistence
+* REST API exposure
+* Internationalization
+* Multi-account support
+* Event sourcing
+
