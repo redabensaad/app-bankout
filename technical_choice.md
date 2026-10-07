@@ -1,132 +1,102 @@
 # Technical Choices • Bankout
 
-This document explains the design decisions made during the implementation of the Bank Account Kata.
+This document explains the engineering decisions made during the implementation of the Bank Account Kata.
 
-## 🏗️ Design Choice: Pure Java
+---
 
-The exercise explicitly targets simplicity.
+$ Pure Java
 
-Adding frameworks such as Spring Boot would introduce unnecessary complexity because the project has:
+The objective of the exercise was to focus on business logic and software design rather than infrastructure.
 
-* No persistence layer
-* No web layer
-* No complex dependency graph
-* No infrastructure concerns
+The project intentionally avoids web frameworks, persistence layers and dependency injection containers.
 
-Using plain Java demonstrates mastery of core language features and object-oriented design without relying on external frameworks.
+> \> No database<br>
+> \> No web layer<br>
+> \> No framework dependency<br>
+> \> No infrastructure concerns<br>
 
-## ⚙️ Layered Architecture
+---
+
+$ Architecture
+
+The application is organized around a lightweight layered architecture separating domain logic, application orchestration and statement generation.
 
 ```text
 src/main/java/com/redabensaad/bankout
 ├── domain/
-│ ├── Account
-│ ├── Amount
-│ ├── Operation
-│ └── Exceptions
 ├── api/
-│ ├── AccountService
-│ └── Clock
 └── statement/
-├── StatementPrinter
-└── ConsoleStatementPrinter
 ```
 
-| Layer | Responsibility |
-|---------|---------|
-| Domain | Business rules and financial logic |
-| API | Application orchestration |
-| Statement | Formatting and output concerns |
+The goal is to keep business rules independent from presentation and infrastructure concerns.
 
-This separation follows the Single Responsibility Principle and keeps the core domain independent from infrastructure concerns.
+---
 
-## ✅ Engineering Principles
+$ Engineering Principles
 
-### Test-Driven Development
+> \> Test-Driven Development<br>
+> \> Financial precision using BigDecimal<br>
+> \> Immutability by default<br>
+> \> Explicit business exceptions<br>
+> \> Dependency inversion through abstractions<br>
 
-Every behavior is introduced through a failing test before implementation.
+Every feature was introduced through a failing test before implementation and refined through iterative refactoring.
 
-```text
-Red → Green → Refactor
-```
+---
 
-### Financial Accuracy
+$ Financial Precision
 
-All monetary values use:
+All monetary values rely on BigDecimal.
 
-```java
-BigDecimal
-```
+Floating-point types were intentionally avoided to prevent rounding issues and preserve deterministic financial calculations.
 
-instead of floating-point types.
+---
 
-This prevents rounding errors and ensures deterministic calculations.
+$ Time Management
 
-### Immutability
+Time-dependent behavior is isolated through a dedicated Clock abstraction.
 
-Operations are immutable records.
+This design improves testability and eliminates dependencies on the system clock.
 
-Once created, a transaction cannot be modified, which guarantees statement consistency and auditability.
+---
 
-### Explicit Domain Exceptions
+$ Deliberately Excluded
 
-Business failures are modeled using dedicated exceptions rather than primitive return values.
+The following concerns were intentionally left outside the scope of the exercise.
 
-Example:
+> \> User interface<br>
+> \> Database persistence<br>
+> \> REST APIs<br>
+> \> Dependency injection frameworks<br>
+> \> Repository pattern<br>
+> \> Builder pattern<br>
 
-```java
-InsufficientBalanceException
-```
+The purpose of the kata is to evaluate design quality and business logic implementation rather than application infrastructure.
 
-### Dependency Inversion
+---
 
-Rendering logic is exposed through the `StatementPrinter` abstraction, allowing business services to remain independent from output implementations.
+$ Testing Strategy
 
-## 🚫 Deliberately Excluded
+Tests validate both domain behavior and application orchestration.
 
-The following concerns were intentionally left out of scope:
+> \> Deposit operations<br>
+> \> Withdrawal operations<br>
+> \> Statement generation<br>
+> \> Amount validation<br>
+> \> Balance management<br>
+> \> Business rule enforcement<br>
 
-* User Interface
-* Database Persistence
-* REST API
-* Dependency Injection Frameworks
-* Repository Pattern
-* Factory Pattern
-* Builder Pattern
+JUnit and AssertJ are used to keep tests expressive and maintainable.
 
-These elements would increase complexity without contributing to the objectives of the exercise.
+---
 
-## 🧪 Testing Strategy
+$ Future Enhancements
 
-### Unit Tests
+Potential extensions beyond the scope of the exercise.
 
-Validate domain behavior:
-
-* Deposits
-* Withdrawals
-* Amount validation
-* Balance management
-
-### Integration Tests
-
-Validate orchestration and statement generation.
-
-### Assertion Framework
-
-AssertJ is used to improve readability and expressiveness of assertions.
-
-## 🔐 Security Considerations
-
-Dependencies are maintained at current versions to mitigate known vulnerabilities and ensure long-term maintainability.
-
-## 🔮 Future Enhancements
-
-Potential extensions beyond the scope of the kata:
-
-* Thread-safe account operations
-* Database persistence
-* REST API exposure
-* Internationalization
-* Multi-account support
-* Event sourcing
-
+> \> Thread-safe account operations<br>
+> \> Database persistence<br>
+> \> REST API exposure<br>
+> \> Internationalization<br>
+> \> Multi-account support<br>
+> \> Event sourcing<br>

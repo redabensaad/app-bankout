@@ -3,125 +3,78 @@
 ![JUnit](https://img.shields.io/badge/JUnit-5-green)
 ![AssertJ](https://img.shields.io/badge/AssertJ-3.x-blue)
 
-# Bankout • Bank Account Kata in Pure Java
+# Bankout
 
-Pure Java implementation of the Bank Account Kata created as part of a technical assessment.
+Pure Java implementation of the Bank Account Kata focused on software craftsmanship, domain modeling and test-driven development.
 
-The project demonstrates Test-Driven Development (TDD), Domain-Driven Design (DDD), Clean Architecture principles, financial precision using BigDecimal, and pragmatic engineering decisions without framework dependency.
+> \> [Live Preview](https://redabensaad.github.io/bankout)
 
-## 🎯 Exercise Context
+---
 
-The kata focuses on implementing a simple banking service API responsible for:
+$ Context
 
-* Depositing money
-* Withdrawing money
-* Printing account statements
+Bankout was developed as part of a technical assessment based on the Bank Account Kata.
 
-The solution intentionally excludes persistence, user interfaces, and frameworks in order to focus entirely on business logic and software design.
+The project intentionally avoids frameworks, persistence layers and user interfaces in order to focus exclusively on business logic, domain modeling and code quality.
 
-## 📋 Specifications
+---
 
-* Pure Java implementation
-* In-memory account management
-* No database
-* No web layer
-* No dependency injection framework
-* Explicit business rules
-* Fully testable architecture
+$ What Was Built
 
-### User Stories
+> \> Deposit operations<br>
+> \> Withdrawal operations<br>
+> \> Account statement generation<br>
+> \> In-memory account management<br>
+> \> Financial calculations using BigDecimal<br>
+> \> Business rule validation<br>
+> \> Domain-specific exceptions<br>
+> \> Statement printing layer<br>
+> \> Clock abstraction for time control<br>
+> \> Fully testable architecture<br>
 
-| ID | Requirement |
-|------|------|
-| US1 | Deposit money into an account |
-| US2 | Withdraw money from an account |
-| US3 | Print account statement with transaction history |
+---
 
-## 🏗️ Architecture
+$ Technical Stack
 
-The project follows a lightweight layered architecture:
+> \> Java 21<br>
+> \> Maven 4<br>
+> \> JUnit 5<br>
+> \> AssertJ<br>
 
-```text
-src/main/java/com/redabensaad/bankout
-├── domain/
-├── api/
-├── statement/
-```
+---
 
-### Domain Layer
+$ Architecture
 
-Contains the core business model:
+The project follows a lightweight layered architecture separating domain logic, service orchestration and statement generation.
 
-* Account
-* Operation
-* Amount
-* Domain Exceptions
+Business behavior is encapsulated within the domain layer while application services coordinate operations and statement rendering.
 
-### API Layer
+The design emphasizes immutability, explicit business rules and framework independence.
 
-Provides service orchestration and entry points:
+---
 
-* AccountService
-* Clock abstraction
+$ Design Decisions
 
-### Statement Layer
+The implementation evolved through multiple refactoring phases driven by TDD.
 
-Responsible for rendering account statements:
+Particular attention was given to financial precision, temporal consistency and domain encapsulation through the introduction of dedicated value objects and a clock abstraction.
 
-* StatementPrinter
-* ConsoleStatementPrinter
+Additional technical details and rationale are documented in the `technical_choices.md` file.
 
-## ✅ Testing Strategy
+---
 
-Developed using a strict TDD workflow:
+$ Project Status
 
-```text
-Red → Green → Refactor
-```
+> \> Completed technical assessment<br>
+> \> Live Preview available<br>
+> \> Test-Driven Development approach<br>
+> \> Framework-independent implementation<br>
+> \> Maintained as a software craftsmanship reference project<br>
 
-### Test Coverage
+---
 
-* Deposit operations
-* Withdrawal operations
-* Statement generation
-* Edge cases
-* Business rule validation
-* Insufficient balance scenarios
-* Temporal behavior
+$ Notes
 
-### Testing Tools
+This project showcases pragmatic application of TDD, DDD concepts, clean architecture principles and maintainable testing practices within a small banking domain.
 
-* JUnit 5
-* AssertJ
-
-## 🔄 Architectural Evolution
-
-The project evolved through several refactoring phases to better align with DDD principles.
-
-### Main Improvements
-
-* Introduction of the `Amount` Value Object
-* Stronger domain encapsulation
-* Improved immutability
-* Internalized time management through `Clock`
-* Removal of temporal vulnerabilities
-* Cleaner Given-When-Then test organization
-
-## 🛠️ Technical Stack
-
-* Java 21
-* Maven
-* JUnit 5
-* AssertJ
-
-## 🚀 Running Tests
-
-```bash
-mvn test
-```
-
-## 📦 Project Status
-
-**Completed • Technical Assessment Project**
-
-This project was developed as part of a coding assessment to demonstrate software craftsmanship practices, including TDD, DDD, clean architecture, financial domain modeling, and maintainable testing strategies.
+It was designed to demonstrate engineering decisions rather than infrastructure, frameworks or deployment concerns.
