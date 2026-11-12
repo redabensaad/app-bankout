@@ -78,3 +78,15 @@ $ Notes
 This project showcases pragmatic application of TDD, DDD concepts, clean architecture principles and maintainable testing practices within a small banking domain.
 
 It was designed to demonstrate engineering decisions rather than infrastructure, frameworks or deployment concerns.
+
+---
+
+$ Preview
+
+![Bankout](shot/bankout.png)
+
+---
+
+$ Built
+
+✓ Feb 2024
